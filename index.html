@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARCANE | وكالة التصميم والتطوير الرقمي العالمية</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <style>
+        :root {
+            --bg-dark-deep: #030303;
+            --bg-dark-card: #09090b;
+            --gold-premium: #c5a880;
+            --purple-cyber: #6d28d9;
+            --purple-glow: rgba(109, 40, 217, 0.15);
+            --gold-glow: rgba(197, 168, 128, 0.15);
+        }
+        body {
+            font-family: 'Cairo', 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark-deep);
+            color: #f4f4f5;
+            overflow-x: hidden;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark-deep); }
+        ::-webkit-scrollbar-thumb { background: #1f1f23; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--gold-premium); }
+
+        /* Modern Custom Cursor */
+        #custom-cursor {
+            width: 8px; height: 8px; background-color: var(--gold-premium);
+            border-radius: 50%; position: fixed; transform: translate(-50%, -50%);
+            pointer-events: none; z-index: 9999; transition: width 0.2s, height 0.2s;
+        }
+        #custom-cursor-blur {
+            width: 40px; height: 40px; border: 1px solid rgba(197, 168, 128, 0.3);
+            border-radius: 50%; position: fixed; transform: translate(-50%, -50%);
+            pointer-events: none; z-index: 9998; transition: transform 0.1s ease-out;
+        }
+
+        /* Glassmorphism */
+        .glass-panel {
+            background: rgba(9, 9, 11, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .glass-card {
+            background: rgba(15, 15, 20, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .glass-card:hover {
+            border-color: rgba(197, 168, 128, 0.3);
+            box-shadow: 0 10px 40px var(--purple-glow);
+            transform: translateY(-5px);
+        }
+
+        /* Ambient Glows */
+        .ambient-glow-1 {
+            position: absolute; width: 600px; height: 600px; top: -10%; left: -10%;
+            background: radial-gradient(circle, var(--purple-glow) 0%, transparent 70%);
+            filter: blur(80px); pointer-events: none; z-index: 0;
+        }
+        .ambient-glow-2 {
+            position: absolute; width: 600px; height: 600px; bottom: 10%; right: -10%;
+            background: radial-gradient(circle, var(--gold-glow) 0%, transparent 70%);
+            filter: blur(80px); pointer-events: none; z-index: 0;
+        }
+
+        .typed-cursor {
+            color: var(--gold-premium);
+            animation: blink 0.7s infinite;
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    </style>
+</head>
+<body class="antialiased selection:bg-[#c5a880] selection:text-black">
+
+    <div id="custom-cursor" class="hidden md:block"></div>
+    <div id="custom-cursor-blur" class="hidden md:block"></div>
+
+    <div id="preloader" class="fixed inset-0 z-[10000] bg-[#030303] flex flex-col justify-center items-center select-none">
+        <div class="relative flex flex-col items-center">
+            <h1 id="logo-loader" class="text-6xl md:text-8xl font-black tracking-[0.25em] text-transparent bg-clip-text bg-gradient-to-r from-white via-[#c5a880] to-[#6d28d9]">
+                ARCANE
+            </h1>
+            <p class="text-[10px] tracking-[0.5em] text-gray-500 mt-4 uppercase font-light">Digital Intelligence Agency</p>
+            
+            <div class="mt-16 text-3xl font-light font-mono text-[#c5a880]" id="loader-percentage">00%</div>
+            
+            <div class="w-48 h-[1px] bg-white/10 mt-2 relative overflow-hidden rounded-full">
+                <div id="loader-bar" class="absolute left-0 top-0 h-full w-0 bg-gradient-to-r from-[#6d28d9] to-[#c5a880] transition-all duration-700"></div>
+            </div>
+        </div>
+    </div>
+
+    <header class="fixed top-0 left-0 w-full z-50 px-6 py-4 md:px-12">
+        <nav class="max-w-7xl mx-auto flex justify-between items-center glass-panel px-6 py-4 rounded-full border-white/5 shadow-2xl">
+            <a href="#" class="text-2xl font-black tracking-widest text-white hover:text-[#c5a880] transition-colors">
+                ARCANE<span class="text-[#6d28d9]">.</span>
+            </a>
+            
+            <div class="hidden md:flex items-center space-x-1 space-x-reverse text-sm font-medium">
+                <a href="#home" class="px-4 py-2 text-white hover:text-[#c5a880] transition-colors">الرئيسية</a>
+                <a href="#about" class="px-4 py-2 text-gray-400 hover:text-[#c5a880] transition-colors">من نحن</a>
+                <a href="#skills" class="px-4 py-2 text-gray-400 hover:text-[#c5a880] transition-colors">الخبرات</a>
+                <a href="#services" class="px-4 py-2 text-gray-400 hover:text-[#c5a880] transition-colors">الخدمات</a>
+                <a href="#portfolio" class="px-4 py-2 text-gray-400 hover:text-[#c5a880] transition-colors">الأعمال</a>
+                <a href="#faq" class="px-4 py-2 text-gray-400 hover:text-[#c5a880] transition-colors">الأسئلة</a>
+            </div>
+
+            <div class="hidden md:block">
+                <a href="https://wa.me/201008044897" target="_blank" class="px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-[#c5a880] to-[#e2c7a3] text-black shadow-lg hover:scale-105 transition-transform duration-300">
+                    ابدأ مشروعك الآن
+                </a>
+            </div>
+
+            <button id="mobile-menu-btn" class="md:hidden text-white focus:outline-none text-xl p-1">
+                <i class="fa-solid fa-bars-staggered"></i>
+            </button>
+        </nav>
+
+        <div id="mobile-menu" class="hidden absolute top-24 left-6 right-6 glass-panel rounded-3xl p-6 flex flex-col space-y-4 border-white/10 shadow-2xl transition-all duration-300">
+            <a href="#home" class="mobile-link text-white py-2 text-center border-b border-white/5">الرئيسية</a>
+            <a href="#about" class="mobile-link text-gray-300 py-2 text-center border-b border-white/5">من نحن</a>
+            <a href="#skills" class="mobile-link text-gray-300 py-2 text-center border-b border-white/5">الخبرات</a>
+            <a href="#services" class="mobile-link text-gray-300 py-2 text-center border-b border-white/5">الخدمات</a>
+            <a href="#portfolio" class="mobile-link text-gray-300 py-2 text-center border-b border-white/5">الأعمال</a>
+            <a href="#faq" class="mobile-link text-gray-300 py-2 text-center border-b border-white/5">الأسئلة</a>
+            <a href="https://wa.me/201008044897" target="_blank" class="w-full text-center py-3 bg-gradient-to-r from-[#c5a880] to-[#6d28d9] rounded-xl font-bold text-sm text-white">تواصل معنا عبر واتساب</a>
+        </div>
+    </header>
+
+    <main class="relative z-10">
+        
+        <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+            <div class="ambient-glow-1"></div>
+            <div class="ambient-glow-2"></div>
+            <canvas id="particles-canvas" class="w-full h-full opacity-40"></canvas>
+        </div>
+
+        <section id="home" class="min-h-screen flex items-center justify-center pt-24 px-6 relative overflow-hidden">
+            <div class="max-w-5xl mx-auto text-center z-10">
+                <div class="reveal-inline inline-flex items-center space-x-2 space-x-reverse px-4 py-1.5 rounded-full glass-panel border-white/10 mb-6 animate-pulse">
+                    <span class="w-2 h-2 rounded-full bg-[#c5a880]"></span>
+                    <span class="text-xs font-light tracking-wide text-gray-400">مستقبل الويب يُصنع هنا - 2026</span>
+                </div>
+                
+                <h1 class="reveal text-4xl sm:text-6xl md:text-8xl font-black tracking-tight leading-none mb-8">
+                    نحن لا نصمم مواقع، بل نبتكر <br class="hidden md:block">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#c5a880] via-white to-[#6d28d9]">
+                        تجارب رقمية خالدة
+                    </span>
+                </h1>
+
+                <p class="reveal text-lg md:text-2xl text-gray-400 font-light max-w-3xl mx-auto mb-12 min-h-[40px]">
+                    وكالة تكنولوجية متخصصة في هندسة حلول الويب الفاخرة لـ 
+                    <span id="typed-text" class="text-white font-semibold"></span><span class="typed-cursor">|</span>
+                </p>
+
+                <div class="reveal flex flex-col sm:flex-row justify-center items-center gap-4">
+                    <a href="#portfolio" class="w-full sm:w-auto px-8 py-4 bg-white text-black font-bold rounded-full shadow-2xl hover:bg-[#c5a880] hover:scale-105 transition-all duration-300 text-sm tracking-wider">
+                        استكشف معرض النخبة <i class="fa-solid fa-arrow-left mr-2"></i>
+                    </a>
+                    <a href="#services" class="w-full sm:w-auto px-8 py-4 glass-panel text-white font-medium rounded-full border-white/10 hover:border-white/30 transition-all duration-300 text-sm">
+                        خدماتنا الابتكارية
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="py-32 px-6 max-w-7xl mx-auto relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="reveal">
+                    <div class="text-[#c5a880] text-xs font-bold tracking-widest uppercase mb-3">// عقلية آركين الرقمية</div>
+                    <h2 class="text-3xl md:text-5xl font-black text-white mb-6 leading-tight">هندسة بصرية دقيقة ترتقي بالعلامات التجارية للعالمية.</h2>
+                    <p class="text-gray-400 font-light leading-relaxed mb-6">
+                        في **ARCANE**، نحن نتجاوز المألوف ونحطم القوالب الجاهزة. نحن نجمع بين المفهوم الفني الإبداعي المتقدم وأحدث البنى البرمجية لعام 2026 لتأسيس هوية رقمية تفرض حضورها بقوة وثقة في الفضاء السيبراني العالمي.
+                    </p>
+                    <p class="text-gray-400 font-light leading-relaxed">
+                        كل بكسل يتم وضعه بدقة، وكل سطر برمجيات يُكتب بعناية فائقة لتقديم أداء خارق، سرعة متناهية، وجمالية تخطف الأنظار تليق بالنخبة من الشركات والمستثمرين.
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="reveal glass-card p-8 rounded-3xl text-center">
+                        <div class="text-4xl md:text-5xl font-black text-[#c5a880] mb-2 font-mono count-number" data-target="45">0</div>
+                        <div class="text-xs text-gray-500 font-medium">مشروعاً متكاملاً</div>
+                    </div>
+                    <div class="reveal glass-card p-8 rounded-3xl text-center">
+                        <div class="text-4xl md:text-5xl font-black text-[#6d28d9] mb-2 font-mono count-number" data-target="99">0</div>
+                        <div class="text-xs text-gray-500 font-medium">كفاءة الأداء والسرعة %</div>
+                    </div>
+                    <div class="reveal glass-card p-8 rounded-3xl text-center">
+                        <div class="text-4xl md:text-5xl font-black text-white mb-2 font-mono count-number" data-target="12">0</div>
+                        <div class="text-xs text-gray-500 font-medium">جوائز وتكريمات بصرية</div>
+                    </div>
+                    <div class="reveal glass-card p-8 rounded-3xl text-center">
+                        <div class="text-4xl md:text-5xl font-black text-[#c5a880] mb-2 font-mono count-number" data-target="100">0</div>
+                        <div class="text-xs text-gray-500 font-medium">رضا العملاء %</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="py-24 px-6 bg-gradient-to-b from-transparent via-[#09090b]/50 to-transparent">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-20">
+                    <span class="text-xs font-bold text-[#6d28d9] uppercase tracking-widest">// الترسانة التقنية والمهارات</span>
+                    <h2 class="text-3xl md:text-5xl font-black text-white mt-2">نبتكر بأعلى معايير التكنولوجيا العالمية</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="reveal glass-card p-6 rounded-2xl flex items-start space-x-4 space-x-reverse">
+                        <div class="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center text-[#c5a880] text-xl">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-lg font-bold text-white mb-1">تطوير UI/UX الفاخر</h4>
+                            <p class="text-sm text-gray-400 font-light">بناء واجهات مستخدم مخصصة تعتمد على مبادئ الـ Glassmorphism المتطورة.</p>
+                        </div>
+                    </div>
+                    <div class="reveal glass-card p-6 rounded-2xl flex items-start space-x-4 space-x-reverse">
+                        <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-[#6d28d9] text-xl">
+                            <i class="fa-solid fa-bolt"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-lg font-bold text-white mb-1">أنظمة الويب وحلول الأنيميشن</h4>
+                            <p class="text-sm text-gray-400 font-light">تكامل مذهل ومطوّر مع محركات الأنيميشن الفائقة والسلسة مثل GSAP.</p>
+                        </div>
+                    </div>
+                    <div class="reveal glass-card p-6 rounded-2xl flex items-start space-x-4 space-x-reverse">
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 text-xl">
+                            <i class="fa-solid fa-code"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-lg font-bold text-white mb-1">هندسة الكود النظيف</h4>
+                            <p class="text-sm text-gray-400 font-light">كتابة أكواد برمجية معيارية محسنة لمحركات البحث وسرعات تحميل قياسية.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="services" class="py-32 px-6 max-w-7xl mx-auto">
+            <div class="text-center mb-20">
+                <span class="text-xs font-bold text-[#c5a880] uppercase tracking-widest">// خدمات الوكالة الاحترافية</span>
+                <h2 class="text-3xl md:text-5xl font-black text-white mt-2">حلول رقمية نُهندسها لتقود السوق</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="reveal glass-card p-10 rounded-3xl relative overflow-hidden group">
+                    <div class="text-4xl text-[#c5a880] mb-6"><i class="fa-solid fa-building-shield"></i></div>
+                    <h3 class="text-xl font-bold text-white mb-4">تصميم مواقع الشركات</h3>
+                    <p class="text-gray-400 text-sm font-light leading-relaxed">بناء منصات ومواقع تعريفية كبرى للشركات والمؤسسات لتعكس الفخامة والموثوقية العالية.</p>
+                </div>
+                <div class="reveal glass-card p-10 rounded-3xl relative overflow-hidden group">
+                    <div class="text-4xl text-[#6d28d9] mb-6"><i class="fa-solid fa-bag-shopping"></i></div>
+                    <h3 class="text-xl font-bold text-white mb-4">تصميم المتاجر الإلكترونية</h3>
+                    <p class="text-gray-400 text-sm font-light leading-relaxed">تأسيس متاجر رقمية تفاعلية فاخرة بمعدلات تحويل مبيعات مرتفعة وتجربة مستخدم انسيابية.</p>
+                </div>
+                <div class="reveal glass-card p-10 rounded-3xl relative overflow-hidden group">
+                    <div class="text-4xl text-amber-500 mb-6"><i class="fa-solid fa-utensils"></i></div>
+                    <h3 class="text-xl font-bold text-white mb-4">موقع مطعم</h3>
+                    <p class="text-gray-400 text-sm font-light leading-relaxed">تصميم بيكسل فريد يستعرض قوائم الطعام بأساليب سينمائية مشوقة وجذابة ترفع من قرار الحجز الفوري.</p>
+                </div>
+                <div class="reveal glass-card p-10 rounded-3xl relative overflow-hidden group">
+                    <div class="text-4xl text-red-500 mb-6"><i class="fa-solid fa-rocket"></i></div>
+                    <h3 class="text-xl font-bold text-white mb-4">تطوير صفحات الهبوط</h3>
+                    <p class="text-gray-400 text-sm font-light leading-relaxed">صفحات هبوط مخصصة وموجهة للحملات الإعلانية بدقة متناهية وسرعة فائقة لاقتناص العملاء.</p>
+                </div>
+                <div class="reveal glass-card p-10 rounded-3xl relative overflow-hidden group">
+                    <div class="text-4xl text-teal-500 mb-6"><i class="fa-solid fa-bezier-curve"></i></div>
+                    <h3 class="text-xl font-bold text-white mb-4">تصميم واجهات احترافية</h3>
+                    <p class="text-gray-400 text-sm font-light leading-relaxed">رسم وتخطيط واجهات وتجارب استخدام متكاملة للأنظمة الرقمية لضمان أعلى مستويات الفائدة.</p>
+                </div>
+                <div class="reveal glass-card p-10 rounded-3xl relative overflow-hidden group">
+                    <div class="text-4xl text-blue-500 mb-6"><i class="fa-solid fa-chart-line"></i></div>
+                    <h3 class="text-xl font-bold text-white mb-4">تحسين وتطوير الأداء السريع</h3>
+                    <p class="text-gray-400 text-sm font-light leading-relaxed">إعادة هيكلة الأنظمة لرفع مستويات الأداء الأمني والتنفيذي لتصل إلى تقييمات تفوق 99%.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="portfolio" class="py-32 px-6 bg-[#060608]">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-20">
+                    <span class="text-xs font-bold text-[#6d28d9] uppercase tracking-widest">// معرض الصفوة الرقمي</span>
+                    <h2 class="text-3xl md:text-5xl font-black text-white mt-2">شاهد روائعنا الهندسية الأخيرة</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    
+                    <div class="reveal glass-card rounded-3xl overflow-hidden group cursor-pointer" onclick="openProjectModal('luxury-shop')">
+                        <div class="h-64 relative bg-gradient-to-tr from-[#1a102f] to-[#0a0518] flex items-center justify-center p-6 overflow-hidden">
+                            <div class="absolute inset-0 bg-cover bg-center mix-blend-overlay opacity-30 transform group-hover:scale-110 transition-transform duration-700" style="background-image: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=600');"></div>
+                            <div class="z-10 text-center">
+                                <span class="text-xs uppercase font-mono tracking-widest text-[#c5a880] bg-black/50 px-3 py-1 rounded-full backdrop-blur-sm">E-Commerce Elite</span>
+                                <h3 class="text-2xl font-black text-white mt-3">منصة OraStore Pro</h3>
+                            </div>
+                            <div class="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-sm font-medium">
+                                عرض تفاصيل المشروع الفاخر <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <span class="text-xs font-bold text-[#c5a880]">متجر إلكتروني فاخر</span>
+                            <h4 class="text-lg font-black text-white mt-1">متجر تجارة إلكترونية ديناميكي متكامل</h4>
+                        </div>
+                    </div>
+
+                    <div class="reveal glass-card rounded-3xl overflow-hidden group cursor-pointer" onclick="openProjectModal('luxury-restaurant')">
+                        <div class="h-64 relative bg-gradient-to-tr from-[#1c1810] to-[#0c0a05] flex items-center justify-center p-6 overflow-hidden">
+                            <div class="absolute inset-0 bg-cover bg-center mix-blend-overlay opacity-30 transform group-hover:scale-110 transition-transform duration-700" style="background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=600');"></div>
+                            <div class="z-10 text-center">
+                                <span class="text-xs uppercase font-mono tracking-widest text-amber-500 bg-black/50 px-3 py-1 rounded-full backdrop-blur-sm">Premium Dining</span>
+                                <h3 class="text-2xl font-black text-white mt-3">مطعم Lumina Bistro</h3>
+                            </div>
+                            <div class="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-sm font-medium">
+                                عرض تفاصيل المشروع الفاخر <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <span class="text-xs font-bold text-amber-500">موقع مطعم سياحي</span>
+                            <h4 class="text-lg font-black text-white mt-1">تجربة تفاعلية لحجز الطاولات واستعراض القوائم الفاخرة</h4>
+                        </div>
+                    </div>
+
+                    <div class="reveal glass-card rounded-3xl overflow-hidden group cursor-pointer" onclick="openProjectModal('corporate-web')">
+                        <div class="h-64 relative bg-gradient-to-tr from-[#0b192c] to-[#030a14] flex items-center justify-center p-6 overflow-hidden">
+                            <div class="absolute inset-0 bg-cover bg-center mix-blend-overlay opacity-30 transform group-hover:scale-110 transition-transform duration-700" style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=600');"></div>
+                            <div class="z-10 text-center">
+                                <span class="text-xs uppercase font-mono tracking-widest text-blue-400 bg-black/50 px-3 py-1 rounded-full backdrop-blur-sm">Corporate Platform</span>
+                                <h3 class="text-2xl font-black text-white mt-3">شركة TechnoWave</h3>
+                            </div>
+                            <div class="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-sm font-medium">
+                                عرض تفاصيل المشروع الفاخر <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <span class="text-xs font-bold text-blue-400">موقع شركة تعريفية</span>
+                            <h4 class="text-lg font-black text-white mt-1">بنية تحتية رقمية وهوية تعريفية للمؤسسات الكبرى</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-32 px-6 max-w-7xl mx-auto">
+            <div class="text-center mb-20">
+                <span class="text-xs font-bold text-[#c5a880] uppercase tracking-widest">// شهادات نعتز بها</span>
+                <h2 class="text-3xl md:text-5xl font-black text-white mt-2">شركاء النجاح يتحدثون عن ARCANE</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="reveal glass-card p-8 rounded-3xl relative">
+                    <div class="text-[#c5a880] text-3xl mb-4"><i class="fa-solid fa-quote-right"></i></div>
+                    <p class="text-gray-300 font-light text-sm leading-relaxed mb-6">
+                        "لقد نقلت وكالة ARCANE متجرنا الإلكتروني إلى مستوى بصري وتنفيذي مذهل. النتيجة كانت زيادة فورية في المبيعات وتجربة تصفح أسرع بمراحل."
+                    </p>
+                    <div class="flex items-center space-x-3 space-x-reverse">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-[#c5a880] to-[#6d28d9] flex items-center justify-center text-xs font-bold text-white">ع.م</div>
+                        <div>
+                            <h5 class="text-sm font-bold text-white">عبد الله منصور</h5>
+                            <p class="text-[11px] text-gray-500">الرئيس التنفيذي لشركة OraStore Pro</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="reveal glass-card p-8 rounded-3xl relative">
+                    <div class="text-[#6d28d9] text-3xl mb-4"><i class="fa-solid fa-quote-right"></i></div>
+                    <p class="text-gray-300 font-light text-sm leading-relaxed mb-6">
+                        "الاحترافية الفائقة والدقة المتناهية في مواعيد التسليم إلى جانب الحس الفني الراقي جداً جعل العمل مع ARCANE تجربة فريدة ومثمرة."
+                    </p>
+                    <div class="flex items-center space-x-3 space-x-reverse">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-400 to-[#6d28d9] flex items-center justify-center text-xs font-bold text-white">س.ر</div>
+                        <div>
+                            <h5 class="text-sm font-bold text-white">سارة الراوي</h5>
+                            <p class="text-[11px] text-gray-500">مديرة قطاع الهوية في TechnoWave</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="reveal glass-card p-8 rounded-3xl relative">
+                    <div class="text-amber-500 text-3xl mb-4"><i class="fa-solid fa-quote-right"></i></div>
+                    <p class="text-gray-300 font-light text-sm leading-relaxed mb-6">
+                        "موقع مطعمنا الجديد نال إعجاب كل الزوار بفضل الأنيميشن والتنقل السلس والفاخر بين الصفحات وقوائم الطعام الرائعة."
+                    </p>
+                    <div class="flex items-center space-x-3 space-x-reverse">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-red-500 flex items-center justify-center text-xs font-bold text-white">خ.ط</div>
+                        <div>
+                            <h5 class="text-sm font-bold text-white">خالم طاهر</h5>
+                            <p class="text-[11px] text-gray-500">مؤسس سلسلة مطاعم Lumina Bistro</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" class="py-32 px-6 max-w-4xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="text-xs font-bold text-[#c5a880] uppercase tracking-widest">// تساؤلات واستفسارات</span>
+                <h2 class="text-3xl md:text-5xl font-black text-white mt-2">الأسئلة الشائعة</h2>
+            </div>
+
+            <div class="space-y-4">
+                <div class="reveal glass-panel rounded-2xl overflow-hidden border-white/5">
+                    <button class="w-full px-6 py-5 text-right flex justify-between items-center font-bold text-white hover:text-[#c5a880] transition-colors focus:outline-none" onclick="toggleAccordion(this)">
+                        <span>ما هي المدة الزمنية المتوقعة لتصميم وتطوير الموقع؟</span>
+                        <i class="fa-solid fa-chevron-down text-sm transition-transform duration-300"></i>
+                    </button>
+                    <div class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out px-6 bg-white/[0.01]">
+                        <p class="py-4 text-sm text-gray-400 font-light leading-relaxed">
+                            تختلف المدة بناءً على حجم المتطلبات، ولكن غالباً ما تستغرق مواقع الهبوط والشركات من 5 إلى 10 أيام عمل، بينما المتاجر الإلكترونية الكبرى تتراوح من 3 إلى 5 أسابيع.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="reveal glass-panel rounded-2xl overflow-hidden border-white/5">
+                    <button class="w-full px-6 py-5 text-right flex justify-between items-center font-bold text-white hover:text-[#c5a880] transition-colors focus:outline-none" onclick="toggleAccordion(this)">
+                        <span>هل المواقع التي يتم إنشاؤها متوافقة ومجهزة للهواتف الذكية؟</span>
+                        <i class="fa-solid fa-chevron-down text-sm transition-transform duration-300"></i>
+                    </button>
+                    <div class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out px-6 bg-white/[0.01]">
+                        <p class="py-4 text-sm text-gray-400 font-light leading-relaxed">
+                            بكل تأكيد. جميع مشاريعنا تُبنى وتُصمم باتباع استراتيجية (Mobile-First)، مما يضمن استجابة مثالية ومبهرة بالكامل على شاشات الهواتف المحمولة والتابلت والكمبيوتر.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="py-32 px-6 max-w-4xl mx-auto text-center relative z-10">
+            <div class="glass-panel p-12 md:p-20 rounded-[40px] border-white/10 relative overflow-hidden shadow-2xl">
+                <div class="relative z-10">
+                    <span class="text-xs font-bold text-[#c5a880] uppercase tracking-widest">// تواصل مباشر وسريع</span>
+                    <h2 class="text-3xl md:text-6xl font-black text-white mt-3 mb-6">دعنا نُحول فكرتك الكبرى <br>إلى واقع رقمي مبهر</h2>
+                    <p class="text-gray-400 font-light max-w-xl mx-auto mb-12 leading-relaxed">
+                        نحن نعتمد بشكل أساسي ومباشر على منصة الواتساب لضمان تواصل فوري وسريع ومثمر مع عملائنا النخبة لبدء التخطيط والتحليل الفوري للمشاريع.
+                    </p>
+                    
+                    <a href="https://wa.me/201008044897" target="_blank" class="inline-flex items-center space-x-3 space-x-reverse px-10 py-5 bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white font-black text-lg rounded-full shadow-2xl hover:scale-105 transition-all duration-300 group">
+                        <span>ابدأ المحادثة عبر واتساب الآن</span>
+                        <i class="fa-brands fa-whatsapp text-2xl group-hover:rotate-12 transition-transform"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-white/5 bg-[#030303] py-12 px-6 relative z-10">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-center md:text-right">
+                <h3 class="text-xl font-black tracking-widest text-white">ARCANE<span class="text-[#c5a880]">.</span></h3>
+                <p class="text-xs text-gray-500 mt-1">© 2026 جميع الحقوق محفوظة لوكالة آركين للهندسة الرقمية الفاخرة.</p>
+            </div>
+            
+            <div class="flex flex-wrap justify-center gap-6 text-xs text-gray-400 font-light">
+                <a href="#home" class="hover:text-[#c5a880] transition-colors">الرئيسية</a>
+                <a href="#about" class="hover:text-[#c5a880] transition-colors">من نحن</a>
+                <a href="#services" class="hover:text-[#c5a880] transition-colors">الخدمات</a>
+                <a href="#portfolio" class="hover:text-[#c5a880] transition-colors">الأعمال</a>
+                <a href="https://wa.me/201008044897" target="_blank" class="text-[#25D366] font-bold">الدعم السريع عبر واتساب</a>
+            </div>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/201008044897" target="_blank" aria-label="WhatsApp Contact" class="fixed bottom-6 right-6 z-[9995] w-14 h-14 bg-[#25D366] rounded-full flex items-center justify-center text-white text-2xl shadow-2xl group">
+        <span class="absolute inset-0 rounded-full bg-[#25D366] opacity-40 animate-ping group-hover:animate-none"></span>
+        <i class="fa-brands fa-whatsapp relative z-10"></i>
+    </a>
+
+    <div id="project-modal" class="fixed inset-0 z-[10005] bg-black/90 backdrop-blur-xl hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
+        <div class="glass-panel max-w-3xl w-full rounded-[32px] overflow-hidden border-white/10 relative shadow-2xl flex flex-col max-h-[90vh]">
+            <button onclick="closeProjectModal()" class="absolute top-4 left-4 z-50 w-10 h-10 rounded-full bg-black/40 text-white flex items-center justify-center hover:bg-white hover:text-black transition-colors focus:outline-none">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div id="modal-content-area" class="overflow-y-auto p-8 md:p-12 text-right">
+                </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Global variables safely verified
+        let animationsInitialized = false;
+
+        // 1. FAIL-SAFE PRELOADER TERMINATOR (حامي شاشة التحميل من التعليق)
+        const safetyTimeout = setTimeout(() => {
+            forceDismissPreloader();
+        }, 1800); // 1.8 Seconds absolute maximum limit
+
+        function forceDismissPreloader() {
+            const preloader = document.getElementById("preloader");
+            if (preloader && preloader.style.display !== "none") {
+                preloader.style.opacity = "0";
+                setTimeout(() => {
+                    preloader.style.display = "none";
+                    if (!animationsInitialized) initScrollAnimations();
+                }, 400);
+            }
+            clearTimeout(safetyTimeout);
+        }
+
+        // Fake percentage logic linked visually with safe fallback
+        window.addEventListener('DOMContentLoaded', () => {
+            let percentageElement = document.getElementById('loader-percentage');
+            let barElement = document.getElementById('loader-bar');
+            let count = 0;
+            
+            let counterInterval = setInterval(() => {
+                count += Math.floor(Math.random() * 15) + 5;
+                if(count >= 100) {
+                    count = 100;
+                    clearInterval(counterInterval);
+                    
+                    if (typeof gsap !== 'undefined') {
+                        gsap.timeline()
+                        .to("#logo-loader", { duration: 0.4, opacity: 1, y: 0, ease: "power2.out" })
+                        .to("#preloader", { duration: 0.5, opacity: 0, onComplete: () => {
+                            document.getElementById("preloader").style.display = "none";
+                            if (!animationsInitialized) initScrollAnimations();
+                        }});
+                    } else {
+                        forceDismissPreloader();
+                    }
+                }
+                if (percentageElement) percentageElement.innerText = count + '%';
+                if (barElement) barElement.style.width = count + '%';
+            }, 40);
+        });
+
+        // 2. CUSTOM CURSOR TRACKING
+        const cursor = document.getElementById('custom-cursor');
+        const cursorBlur = document.getElementById('custom-cursor-blur');
+
+        document.addEventListener('mousemove', (e) => {
+            if(cursor && cursorBlur) {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+                setTimeout(() => {
+                    cursorBlur.style.left = e.clientX + 'px';
+                    cursorBlur.style.top = e.clientY + 'px';
+                }, 40);
+            }
+        });
+
+        document.querySelectorAll('a, button, .cursor-pointer').forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                if(cursor && cursorBlur) {
+                    cursor.style.width = '20px'; cursor.style.height = '20px'; cursor.style.backgroundColor = 'rgba(197, 168, 128, 0.2)';
+                    cursorBlur.style.transform = 'translate(-50%, -50%) scale(1.3)';
+                }
+            });
+            item.addEventListener('mouseleave', () => {
+                if(cursor && cursorBlur) {
+                    cursor.style.width = '8px'; cursor.style.height = '8px'; cursor.style.backgroundColor = '#c5a880';
+                    cursorBlur.style.transform = 'translate(-50%, -50%) scale(1)';
+                }
+            });
+        });
+
+        // 3. GSAP SCROLL REVEAL SAFELY ARCHITECTED
+        function initScrollAnimations() {
+            animationsInitialized = true;
+            startTypingEngine();
+
+            if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+                // If CDN block happens, reveal everything instantly without breaking site
+                document.querySelectorAll('.reveal, .reveal-inline').forEach(el => el.style.opacity = "1");
+                document.querySelectorAll('.count-number').forEach(el => el.innerText = el.getAttribute('data-target'));
+                return;
+            }
+
+            gsap.registerPlugin(ScrollTrigger);
+            
+            gsap.utils.toArray('.reveal').forEach((elem) => {
+                gsap.fromTo(elem, { y: 30, opacity: 0 }, { 
+                    scrollTrigger: { trigger: elem, start: "top 88%", toggleActions: "play none none none" },
+                    y: 0, opacity: 1, duration: 0.8, ease: "power2.out"
+                });
+            });
+
+            gsap.utils.toArray('.count-number').forEach((elem) => {
+                let targetValue = parseInt(elem.getAttribute('data-target')) || 0;
+                gsap.fromTo(elem, { innerText: 0 }, {
+                    scrollTrigger: { trigger: elem, start: "top 90%" },
+                    innerText: targetValue, duration: 1.5, ease: "power1.out",
+                    snap: { innerText: 1 },
+                    modifiers: { innerText: function(innerText) { return Math.floor(innerText); } }
+                });
+            });
+        }
+
+        // 4. AUTO-TYPING MATRIX SCRIPT
+        const phrases = ["المتاجر الإلكترونية الفاخرة.", "مواقع الشركات العالمية.", "تطبيقات الويب الذكية."];
+        let currentPhraseIndex = 0;
+        let currentCharIndex = 0;
+        let isDeleting = false;
+
+        function startTypingEngine() {
+            const typedTextElement = document.getElementById('typed-text');
+            if(!typedTextElement) return;
+
+            let currentPhrase = phrases[currentPhraseIndex];
+            
+            if (isDeleting) {
+                typedTextElement.innerText = currentPhrase.substring(0, currentCharIndex - 1);
+                currentCharIndex--;
+            } else {
+                typedTextElement.innerText = currentPhrase.substring(0, currentCharIndex + 1);
+                currentCharIndex++;
+            }
+
+            let typingSpeed = isDeleting ? 30 : 80;
+
+            if (!isDeleting && currentCharIndex === currentPhrase.length) {
+                typingSpeed = 1500;
+                isDeleting = true;
+            } else if (isDeleting && currentCharIndex === 0) {
+                isDeleting = false;
+                currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
+                typingSpeed = 400;
+            }
+
+            setTimeout(startTypingEngine, typingSpeed);
+        }
+
+        // 5. MOBILE NAVIGATION CONTROLLER
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if(mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+            document.querySelectorAll('.mobile-link').forEach(link => {
+                link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+            });
+        }
+
+        // 6. AMBIENT BACKGROUND PARTICLES CANVAS ENGINE
+        const canvas = document.getElementById('particles-canvas');
+        if(canvas) {
+            const ctx = canvas.getContext('2d');
+            let particlesArray = [];
+            const resizeCanvas = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 1.5 + 0.5;
+                    this.speedX = Math.random() * 0.2 - 0.1;
+                    this.speedY = Math.random() * 0.2 - 0.1;
+                }
+                update() {
+                    this.x += this.speedX; this.y += this.speedY;
+                    if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
+                    if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
+                }
+                draw() {
+                    ctx.fillStyle = Math.random() > 0.5 ? '#c5a880' : '#6d28d9';
+                    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+                }
+            }
+            const initParticles = () => {
+                particlesArray = [];
+                let numberOfParticles = (canvas.width * canvas.height) / 20000;
+                for (let i = 0; i < numberOfParticles; i++) particlesArray.push(new Particle());
+            };
+            initParticles();
+            const animateParticles = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (let i = 0; i < particlesArray.length; i++) { particlesArray[i].update(); particlesArray[i].draw(); }
+                requestAnimationFrame(animateParticles);
+            };
+            animateParticles();
+        }
+
+        // 7. ACCORDION FAQ SYSTEM
+        function toggleAccordion(button) {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('i');
+            if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+                content.style.maxHeight = '0px';
+                if(icon) icon.style.transform = 'rotate(0deg)';
+            } else {
+                document.querySelectorAll('#faq .max-h-0').forEach(el => el.style.maxHeight = '0px');
+                document.querySelectorAll('#faq i').forEach(ic => ic.style.transform = 'rotate(0deg)');
+                content.style.maxHeight = content.scrollHeight + 'px';
+                if(icon) icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // 8. DATA OBJECTS FOR MODAL INTERACTION (محدث بالكامل بمشاريعك الحقيقية)
+        const projectsData = {
+            'luxury-shop': {
+                title: "منصة أورا ستور برو | OraStore Pro",
+                category: "E-Commerce / Advanced Data-Driven Web",
+                description: "متجر إلكتروني متكامل عالي الأداء يعتمد على المعالجة الديناميكية للبيانات. يدمج تجربة مستخدم مستوحاة من منصات عالمية، ويحتوي على نظام سلة مشتريات تفاعلي يسحب البيانات جانبياً (Cart Drawer)، ونظام كوبونات حقيقي لحساب الخصومات فورياً، مع محرك بحث حي وفلاتر تصنيفات سريعة، مدعوماً بحفظ البيانات المستمر عبر LocalStorage لمنع ضياع المشتريات.",
+                techStack: ["HTML5 Architecture", "CSS Variables & Flexbox", "JavaScript DOM Manipulation", "Client-Side LocalStorage"],
+                features: ["محرك بحث حي فوري (Live Search Feature)", "نظام مفضلة وحقيبة تسوق ديناميكية كاملة", "تطبيق كوبونات خصم تفاعلي ومعادلات حسابية للفواتير", "حفظ البيانات المستمر لمنع ضياع المشتريات عند تحديث الصفحة"]
+            },
+            'luxury-restaurant': {
+                title: "مطعم Lumina Bistro الفاخر",
+                category: "Creative UI / Dining Web",
+                description: "موقع ويب تعريفي وتفاعلي متكامل تم هندسته خصيصاً لمطعم Lumina Bistro الفاخر. يتميز بتجربة بصرية راقية تدمج اللون الذهبي الملكي والأسود الداكن، ويعرض قوائم الطعام والمأكولات المصنفة (أطباق رئيسية، مقبلات، حلويات ومشروبات) بأسلوب انسيابي، بالإضافة إلى نظام حجز طاولات تفاعلي مباشر وزر تواصل فوري عبر الواتساب المعزز.",
+                techStack: ["HTML5 Semantic", "CSS3 Custom Properties", "Vanilla JavaScript", "Google Fonts / Cairo", "FontAwesome Lib"],
+                features: ["تصنيفات قائمة طعام موسعة (Menu Sections)", "نظام حجز طاولات ذكي مع التحقق من البيانات داخل المدخلات", "تأثيرات تحرك وظهور انسيابية عند التمرير (Scroll Reveal)", "خرائط تفاعلية مع زر واتساب عائم متجاوب"]
+            },
+            'corporate-web': {
+                title: "موقع شركة تكنو ويف | TechnoWave",
+                category: "Corporate Infrastructure / Modern Web",
+                description: "بنية تحتية رقمية ومنصة تعريفية فاخرة تم هندستها بالكامل لتعكس الهوية الرسمية والموثوقية المطلقة لشركات حلول الأعمال والخدمات التقنية المتقدمة. يعتمد الموقع على مرونة فائقة وتجاوب تام مع كافة الشاشات وأجهزة الجوال الذكية والأجهزة اللوحية.",
+                techStack: ["HTML5 Semantic Tags", "CSS Flexbox & CSS Grid", "JavaScript UI Controls", "SEO & Core Web Vitals Optimization"],
+                features: ["هيكل برميجي نظيف (Clean & Documented Architecture)", "تنسيقات CSS متطورة بدون مكتبات خارجية ثقيلة", "تجاوب كامل وفائق الدقة (Fully Responsive Design)", "تكامل تام ومحسن مع محركات البحث ومقاييس الأداء العالمي"]
+            }
+        };
+
+        const modal = document.getElementById('project-modal');
+        const modalContentArea = document.getElementById('modal-content-area');
+
+        function openProjectModal(projectId) {
+            const data = projectsData[projectId];
+            if(!data || !modal || !modalContentArea) return;
+
+            let techBadges = data.techStack.map(tech => `<span class="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs font-mono text-gray-300">${tech}</span>`).join(' ');
+            let featureItems = data.features.map(feat => `<li class="flex items-center space-x-2 space-x-reverse text-sm text-gray-400 font-light"><i class="fa-solid fa-circle-check text-[#c5a880] text-xs"></i> <span class="mr-2">${feat}</span></li>`).join(' ');
+
+            modalContentArea.innerHTML = `
+                <span class="text-xs font-bold text-[#c5a880] uppercase tracking-widest">// تفاصيل مراجعة المشروع</span>
+                <h3 class="text-2xl md:text-4xl font-black text-white mt-2 mb-1">${data.title}</h3>
+                <p class="text-xs text-[#6d28d9] font-mono tracking-wide mb-6">${data.category}</p>
+                <hr class="border-white/5 my-4">
+                <p class="text-gray-300 font-light text-sm leading-relaxed mb-6">${data.description}</p>
+                <h4 class="text-sm font-bold text-white mb-3">التقنيات المستخدمة:</h4>
+                <div class="flex flex-wrap gap-2 mb-6">${techBadges}</div>
+                <h4 class="text-sm font-bold text-white mb-3">أبرز المزايا:</h4>
+                <ul class="space-y-2 mb-8">${featureItems}</ul>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="https://wa.me/201008044897" target="_blank" class="px-6 py-3 bg-gradient-to-r from-[#c5a880] to-[#6d28d9] text-center text-white font-bold rounded-full text-xs uppercase tracking-wider shadow-lg">
+                        اطلب مشروعاً مماثلاً عبر واتساب
+                    </a>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+            if (typeof gsap !== 'undefined') {
+                gsap.to(modal, { duration: 0.2, opacity: 1, ease: "power2.out" });
+            } else {
+                modal.style.opacity = "1";
+            }
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeProjectModal() {
+            if(!modal) return;
+            if (typeof gsap !== 'undefined') {
+                gsap.to(modal, { duration: 0.2, opacity: 0, onComplete: () => { modal.classList.add('hidden'); document.body.style.overflow = ''; }});
+            } else {
+                modal.style.opacity = "0"; modal.classList.add('hidden'); document.body.style.overflow = '';
+            }
+        }
+
+        if(modal) {
+            modal.addEventListener('click', (e) => { if(e.target === modal) closeProjectModal(); });
+        }
+    </script>
+</body>
+</html>
